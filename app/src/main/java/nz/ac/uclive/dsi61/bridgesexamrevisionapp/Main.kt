@@ -93,22 +93,44 @@ fun MainScreen(context: Context, navController: NavController) {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            MyTextField(bridgeName) {            newVal ->
-                bridgeName = newVal
-                setSharedPref(context, "bridge_name", newVal)}
-
-
             Text(text = "Bridges Walked On:")
             Text(text = getSharedPref(context, "bridges_list").split("\n").size.toString())
-
         }
 
 
 
 
 
-        if(isAddBridgeDialogOpen.value) {
-            AddBridgeDialog(context, navController, isAddBridgeDialogOpen, mutableStateOf(bridgeName), mutableStateOf(bridgeLength))
+        if(isAddBridgeDialogOpen.value) { //TODO SHEET: have AlertDialog NOT in separate fn bc we get probs with mutaState, things not bing set directly, typeerrors... So just have here, in main code
+            AlertDialog(
+                onDismissRequest = {
+                    isAddBridgeDialogOpen.value = false
+                },
+                confirmButton = {
+                    Button (
+                        onClick = {
+                            isAddBridgeDialogOpen.value = false
+                            navController.navigate(Screens.ViewEntry.route)
+                        }
+                    ) {
+                        Text(text = "Submit")
+                    }
+                },
+                title = { Text(text = "Add a Bridge") },
+                text = { //TODO
+                    Column () {
+                        MyTextField("hello", bridgeName) {            newVal ->
+                            bridgeName = newVal
+                            setSharedPref(context, "bridge_name", newVal)
+                        }
+                        MyTextField("hello", bridgeLength) {            newVal ->
+                            bridgeLength = newVal
+                            setSharedPref(context, "bridge_length", newVal)
+                        }
+
+                    }
+                }
+            )
         }
 
     }
@@ -116,61 +138,12 @@ fun MainScreen(context: Context, navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTextField(selectedValue: String, onValueChange: (String) -> Unit) {
+fun MyTextField(label: String, selectedValue: String, onValueChange: (String) -> Unit) {
     TextField(
         modifier = Modifier,
-        label = {Text(text = "Bridge Name")},
-        placeholder = {Text(text = "Enter bridge name")},
+        label = {Text(text = label)},
+//        placeholder = {Text(text = "Enter bridge name")},
         value = selectedValue,
         onValueChange = onValueChange
     )
-}
-
-@Composable
-fun AddBridgeDialog(context: Context, navController: NavController, isAddBridgeDialogOpen: MutableState<Boolean>, bridgeName: MutableState<String>, bridgeLength: MutableState<String>) { //TODO
-    //    AlertDialog(
-//        onDismissRequest = {
-//            isAddBridgeDialogOpen.value = false
-//        },
-//        confirmButton = {
-//            isAddBridgeDialogOpen.value = false
-//            navController.navigate(Screens.ViewEntry.route)
-//        },
-//        title = { Text(text = "Add a Bridge") },
-//        text = {
-//            val options
-//        }
-//    )
-
-    AlertDialog(
-        onDismissRequest = {
-            isAddBridgeDialogOpen.value = false
-        },
-        confirmButton = {
-            Button (
-                onClick = {
-                    isAddBridgeDialogOpen.value = false
-                    navController.navigate(Screens.ViewEntry.route)
-                }
-            ) {
-                Text(text = "Submit")
-            }
-        },
-        title = { Text(text = "Add a Bridge") },
-        text = { //TODO
-            Column () {
-                MyTextField(bridgeName.value) {            newVal ->
-                    bridgeName.value = newVal
-                    setSharedPref(context, "bridge_name", newVal)
-                }
-                MyTextField(bridgeLength.value) {            newVal ->
-                    bridgeLength.value = newVal
-                    setSharedPref(context, "bridge_length", newVal)
-                }
-
-            }
-        }
-    )
-
-
 }
