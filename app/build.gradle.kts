@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "nz.ac.uclive.dsi61.bridgesexamrevisionapp"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "nz.ac.uclive.dsi61.bridgesexamrevisionapp"
-        minSdk = 34
-        targetSdk = 34
+        minSdk = 33
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -51,9 +51,9 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.9.0") // 1.12.0 requires API 34
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.7.2") // 1.8.0 requires API 34
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -67,7 +67,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    val nav_ver = "2.7.4" // 1.4.0
+    val nav_ver = "2.4.0" // 1.4.0 in tuts    // 2.7.4 latest requires API 34
     implementation("androidx.navigation:navigation-compose:$nav_ver")
     implementation("androidx.navigation:navigation-runtime-ktx:$nav_ver")
     implementation("androidx.navigation:navigation-common-ktx:$nav_ver")
