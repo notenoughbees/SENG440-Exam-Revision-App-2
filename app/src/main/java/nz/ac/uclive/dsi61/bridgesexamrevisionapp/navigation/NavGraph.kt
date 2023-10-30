@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import nz.ac.uclive.dsi61.bridgesexamrevisionapp.CollectionListScreen
 import nz.ac.uclive.dsi61.bridgesexamrevisionapp.ViewEntryScreen
 import nz.ac.uclive.dsi61.bridgesexamrevisionapp.screens.Screens
 import nz.ac.uclive.dsi61.bridgesexamrevisionapp.MainScreen
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 
 @Composable
 fun NavGraph(navController : NavHostController) {
@@ -27,9 +29,13 @@ fun NavGraph(navController : NavHostController) {
             CollectionListScreen(LocalContext.current, navController)
         }
         composable(
-            route = Screens.ViewEntry.route
+            route = Screens.ViewEntry.route,
+            arguments = listOf(navArgument("id") { //TODO: navigation w/ arg [3/3]
+                type = NavType.IntType
+            })
         ) { backStackEntry ->
-            ViewEntryScreen(LocalContext.current, navController)
+            val bridgeId = backStackEntry.arguments?.getInt("id") ?: -1
+            ViewEntryScreen(LocalContext.current, navController, bridgeId)
         }
     }
 }

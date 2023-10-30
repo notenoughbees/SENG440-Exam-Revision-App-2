@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "nz.ac.uclive.dsi61.bridgesexamrevisionapp"
-        minSdk = 33
+        minSdk = 30
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

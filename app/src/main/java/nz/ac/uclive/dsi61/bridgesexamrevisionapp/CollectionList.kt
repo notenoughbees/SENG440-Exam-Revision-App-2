@@ -2,8 +2,10 @@ package nz.ac.uclive.dsi61.bridgesexamrevisionapp
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,9 +39,18 @@ fun CollectionListScreen(context: Context, navController: NavController) {
         val bridgesList = bridgesString.split("\n")
         BridgesList(bridgesList, onBridgeClick = {bridge ->
             Toast.makeText(context, bridge, Toast.LENGTH_SHORT).show()
-//            selectedBridge = bridge
-        })
+            // the bridge id comes from getting the bridge's index in the bridges list, which is a string split by newlines
+            Log.d("BRIDGES LIST", bridgesList.toString())
+            Log.d("BRIDGE", bridge)
+            val bridgeId = bridgesList.indexOf(bridge)
+            Log.d("BRIDGE ID", bridgeId.toString())
+            if (bridgeId != -1) { // Check if the bridge is found in the list
+                navController.navigate(Screens.ViewEntry.passId(bridgeId)) //TODO: navigation w/ arg [1/3]
+            } else { // Handle the case where the bridge is not found in the list
+                Toast.makeText(context, "Bridge not found", Toast.LENGTH_SHORT).show()
+            }
 
+        })
     }
 }
 
@@ -50,13 +61,18 @@ fun BridgesList(bridgesList: List<String>, onBridgeClick: (String) -> Unit) {
         modifier = Modifier.padding(16.dp)
 
     ) {
-        items(bridgesList) { bridge ->
-            Text(
+        items(bridgesList) { bridge -> // bridge = <name>\t<length>
+            Box( //TODO: wrap in box so can make box clickable instead of just text
                 modifier = Modifier
-                    .padding(all = 32.dp)
                     .clickable { onBridgeClick(bridge) },
-                text = bridge
-            )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(all = 32.dp),
+                    text = bridge.split("\t")[0] // get the bridge name only
+                )
+            }
+
         }
     }
 }
