@@ -2,6 +2,8 @@ package nz.ac.uclive.dsi61.bridgesexamrevisionapp
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +24,7 @@ import nz.ac.uclive.dsi61.bridgesexamrevisionapp.screens.Screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionListScreen(context: Context, navController: NavController) {
-    var isAddBridgeDialogOpen = remember { mutableStateOf(false) }
+    val isAddBridgeDialogOpen = remember { mutableStateOf(false) }
     Scaffold (
         topBar = {
             MyTopBar()
@@ -33,21 +35,27 @@ fun CollectionListScreen(context: Context, navController: NavController) {
     ) {
         val bridgesString = getSharedPref(context, "bridge_list")
         val bridgesList = bridgesString.split("\n")
-        BridgesList(bridgesList)
+        BridgesList(bridgesList, onBridgeClick = {bridge ->
+            Toast.makeText(context, bridge, Toast.LENGTH_SHORT).show()
+//            selectedBridge = bridge
+        })
 
     }
 }
 
 
 @Composable
-fun BridgesList(bridgesList: List<String>) {
+fun BridgesList(bridgesList: List<String>, onBridgeClick: (String) -> Unit) {
     LazyColumn(
         modifier = Modifier.padding(16.dp)
 
     ) {
         items(bridgesList) { bridge ->
             Text(
-              text = bridge
+                modifier = Modifier
+                    .padding(all = 32.dp)
+                    .clickable { onBridgeClick(bridge) },
+                text = bridge
             )
         }
     }
