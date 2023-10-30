@@ -3,6 +3,7 @@ package nz.ac.uclive.dsi61.bridgesexamrevisionapp
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,50 +44,15 @@ import nz.ac.uclive.dsi61.bridgesexamrevisionapp.screens.Screens
 @Composable
 fun MainScreen(context: Context, navController: NavController) {
     var bridgeName by rememberSaveable { mutableStateOf(getSharedPref(context, "bridge_name")) }
-    var bridgeLength by rememberSaveable { mutableStateOf(getSharedPref(context, "bridge_length")) }
+//    var bridgeLength by rememberSaveable { mutableStateOf(getSharedPref(context, "bridge_length")) }
     var isAddBridgeDialogOpen = remember { mutableStateOf(false) }
 
     Scaffold (
         topBar = {
             MyTopBar()
         },
-
         bottomBar = {
-            BottomAppBar ( // TODO: no {}
-                containerColor = Color.Magenta, //TODO: THEMING
-                contentPadding = PaddingValues(16.dp),
-                content = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly //TODO: how do we add multiple things here? -> must make another element & add it to that BUT NOT IN THIS SITUATION BC IT SQUISHES THE BUTTONS/TEXT NEXT TO EACH OTHER
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "View Bridges")
-                            IconButton(
-                                onClick = {
-                                    navController.navigate(Screens.CollectionList.route)
-                                }
-                            ) {
-                                Icon(Icons.Filled.List, null)
-                            }
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "Add Bridge")
-                            IconButton(
-                                onClick = {
-                                    isAddBridgeDialogOpen.value = true
-                                }
-                            ) {
-                                Icon(Icons.Filled.Add, null)
-                            }
-                        }
-                    }
-                }
-            )
+            MyBottomBar(navController, isAddBridgeDialogOpen)
         }
 
     ) {innerPadding ->
@@ -95,12 +61,14 @@ fun MainScreen(context: Context, navController: NavController) {
         ) {
             Text(text = "Bridges Walked On:")
             Text(text = getSharedPref(context, "bridges_list").split("\n").size.toString())
+//            Text(text = "Total Distance Walked:")
+//            Text(text = getSharedPref(context, "bridge_length_total").toString())
         }
 
 
 
 
-
+        // DIALOG STUFF: NOT PART OF MAIN LAYOUT
         if(isAddBridgeDialogOpen.value) { //TODO SHEET: have AlertDialog NOT in separate fn bc we get probs with mutaState, things not bing set directly, typeerrors... So just have here, in main code
             AlertDialog(
                 onDismissRequest = {
@@ -109,6 +77,12 @@ fun MainScreen(context: Context, navController: NavController) {
                 confirmButton = {
                     Button (
                         onClick = {
+                            // add the bridge name to the list of all bridge names (a string)
+                            val newBridgeName = getSharedPref(context, "bridge_name")
+
+                            val bridgeList = getSharedPref(context, "bridge_list")
+                            setSharedPref(context, "bridge_list", bridgeList + "\n" + newBridgeName)
+
                             isAddBridgeDialogOpen.value = false
                             navController.navigate(Screens.ViewEntry.route)
                         }
@@ -117,16 +91,21 @@ fun MainScreen(context: Context, navController: NavController) {
                     }
                 },
                 title = { Text(text = "Add a Bridge") },
-                text = { //TODO
+                text = { //TODO: we can add components in the text! :D This is how we do textfields etc
                     Column () {
-                        MyTextField("hello", bridgeName) {            newVal ->
+                        MyTextField("Bridge Name", bridgeName) { newVal ->
                             bridgeName = newVal
                             setSharedPref(context, "bridge_name", newVal)
                         }
-                        MyTextField("hello", bridgeLength) {            newVal ->
-                            bridgeLength = newVal
-                            setSharedPref(context, "bridge_length", newVal)
-                        }
+//                        MyTextField("Bridge Length", bridgeLength) { newVal ->
+//                            bridgeLength = newVal
+//                            // add TO the current value instead of replacing
+//                            val distanceWalkedAlready = getSharedPref(context, "bridge_length_total")
+//                            Log.d("FOO", distanceWalkedAlready)
+//                            Log.d("FOO", distanceWalkedAlready + newVal)
+//                            setSharedPref(context, "bridge_length_total", (distanceWalkedAlready.toDoubleOrNull()
+//                                ?.plus(newVal.toDoubleOrNull()!!)).toString())
+//                        }
 
                     }
                 }

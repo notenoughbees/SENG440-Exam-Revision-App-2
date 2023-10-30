@@ -8,6 +8,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import nz.ac.uclive.dsi61.bridgesexamrevisionapp.screens.Screens
 
@@ -15,33 +17,17 @@ import nz.ac.uclive.dsi61.bridgesexamrevisionapp.screens.Screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewEntryScreen(context: Context, navController: NavController) {
+    var isAddBridgeDialogOpen = remember { mutableStateOf(false) }
     Scaffold (
-
-    ) {
-        Row(
-
-        ) {
-            Button(
-                onClick = {
-                    navController.navigate(Screens.Main.route)
-                }
-            ) {
-                Text(text = "main")
-            }
-            Button(
-                onClick = {
-                    navController.navigate(Screens.CollectionList.route)
-                }
-            ) {
-                Text(text = "collection list")
-            }
-            Button(
-                onClick = {
-                    navController.navigate(Screens.ViewEntry.route)
-                }
-            ) {
-                Text(text = "VIEW ENTRY")
-            }
+        topBar = {
+            MyTopBar()
+        },
+        bottomBar = {
+            MyBottomBar(navController, isAddBridgeDialogOpen)
         }
+    ) {
+
+
+
     }
 }
